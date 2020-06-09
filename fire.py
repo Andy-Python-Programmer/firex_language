@@ -63,19 +63,6 @@ class Position:
     def copy(self):
         return Position(self.idx, self.ln, self.col, self.fn, self.ftxt)
 
-#######################################
-# TOKENS
-#######################################
-
-TT_INT		= 'INT'
-TT_FLOAT    = 'FLOAT'
-TT_PLUS     = 'PLUS'
-TT_MINUS    = 'MINUS'
-TT_MUL      = 'MUL'
-TT_DIV      = 'DIV'
-TT_LPAREN   = 'LPAREN'
-TT_RPAREN   = 'RPAREN'
-
 class Token:
     def __init__(self, type_, value=None):
         self.type = type_
