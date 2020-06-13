@@ -1,0 +1,10 @@
+Rules:
+    | == OR
+    : == RULE 
+    * == ANYTHING AFTER THAT
+
+expr    :   term ((PLUS|MINUS) term) *
+factor  :   factor ((MUL|DIV) factor) *
+power   :   atom  (POW factor) *
+atom    :   INT|FLOAT
+        : LPAREN expr RPAREN
