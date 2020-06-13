@@ -4,7 +4,11 @@ Rules:
     * == ANYTHING AFTER THAT
 
 expr    :   term ((PLUS|MINUS) term) *
+        :   KEYWORD : var IDENTIFIER EQ expr
+
 factor  :   factor ((MUL|DIV) factor) *
+
 power   :   atom  (POW factor) *
-atom    :   INT|FLOAT
-        : LPAREN expr RPAREN
+
+atom    :   INT|FLOAT|IDENTIFIER
+        :   LPAREN expr RPAREN
