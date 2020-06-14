@@ -2,6 +2,7 @@ Rules:
     | == OR
     : == RULE 
     * == ANYTHING AFTER THAT
+    ? == Optional
 
 expr    :   KEYWORD : var IDENTIFIER EQ expr
         :   comparison-expression ((KEYWORD:AND|KEYWORD:OR) comparison-expression) *
@@ -17,3 +18,8 @@ power   :   atom  (POW factor) *
 
 atom    :   INT|FLOAT|IDENTIFIER
         :   LPAREN expr RPAREN
+        :   if-expression
+
+if-expression          :  KEYWORD: if expression KEYWORD: then expression
+                                (KEYWORD: elif expression KEYWORD: then expression) *
+                                (KEYWORD: else expression) ?
