@@ -12,7 +12,7 @@ import string
 # If you are contributing to this language please keep the constants upper case as python does not have a final method so it helps us to know which is a var and which is a const of final
 
 DIGITS = "0123456789"
-LETTERS = string.ascii_letters
+LETTERS = string.ascii_letters + ":"
 LETTERS_DIGITS = LETTERS + DIGITS
 
 TT_INT = "TT_INT"  # Integer
@@ -41,7 +41,7 @@ KEYWORDS = [
     "or",
     "not",
     "if",
-    "then",
+    ":",
     "elif",
     "else"
 ]
@@ -223,7 +223,7 @@ class Lexer:
         id_str = ''
         pos_start = self.pos.copy()
 
-        while self.current_char != None and self.current_char in LETTERS_DIGITS + '_':
+        while self.current_char != None and self.current_char in LETTERS_DIGITS + '_' + ":":
             id_str += self.current_char
             self.advance()
 
@@ -420,7 +420,7 @@ class Parser:
         condition = res.register(self.expr())
         if res.error: return res
 
-        if not self.current_tok.matches(TT_KEYWORD, "then"):
+        if not self.current_tok.matches(TT_KEYWORD, ":"):
             return res.failure(InvalidSyntaxError(
                 self.current_tok.pos_start, self.current_tok.pos_end,
                 f"Expected 'THEN'"
@@ -440,7 +440,7 @@ class Parser:
             condition = res.register(self.expr())
             if res.error: return res
 
-            if not self.current_tok.matches(TT_KEYWORD, "then"):
+            if not self.current_tok.matches(TT_KEYWORD, ":"):
                 return res.failure(InvalidSyntaxError(
                     self.current_tok.pos_start, self.current_tok.pos_end,
                     f"Expected 'THEN'"
