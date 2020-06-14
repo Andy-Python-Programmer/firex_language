@@ -3,6 +3,7 @@ Rules:
     : == RULE 
     * == ANYTHING AFTER THAT
     ? == Optional
+    (:) == Do not be confused it is the then keyword in brackets :)
 
 expr    :   KEYWORD : var IDENTIFIER EQ expr
         :   comparison-expression ((KEYWORD:AND|KEYWORD:OR) comparison-expression) *
@@ -19,7 +20,14 @@ power   :   atom  (POW factor) *
 atom    :   INT|FLOAT|IDENTIFIER
         :   LPAREN expr RPAREN
         :   if-expression
+        :   for-expression
+        :   while-expression
 
-if-expression          :  KEYWORD: if expression KEYWORD: then expression
+if-expression          :  KEYWORD: if expression KEYWORD: (:) expression
                                 (KEYWORD: elif expression KEYWORD: then expression) *
                                 (KEYWORD: else expression) ?
+
+for-expression          : KEYWORD: for IDENTIFIER EQ expression KEYWORD: to expression
+                                (KEYWORD: STEP expression)? KEYWORD: (:) expression
+
+while-expression        : KEYWORD: while expression KEYWORD: (:) expression
