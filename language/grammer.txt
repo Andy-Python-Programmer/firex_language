@@ -3,8 +3,13 @@ Rules:
     : == RULE 
     * == ANYTHING AFTER THAT
 
-expr    :   term ((PLUS|MINUS) term) *
-        :   KEYWORD : var IDENTIFIER EQ expr
+expr    :   KEYWORD : var IDENTIFIER EQ expr
+        :   comparison-expression ((KEYWORD:AND|KEYWORD:OR) comparison-expression) *
+        
+comparison-expression  :  NOT  comparison-expression
+                       :  arithmetic-expression((EE|LT|GT|LTE|GTE) arithmetic-expression) *
+        
+arithmetic-expression  :  term ((PLUS|MINUS) term) *
 
 factor  :   factor ((MUL|DIV) factor) *
 
