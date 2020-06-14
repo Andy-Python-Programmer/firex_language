@@ -3,6 +3,7 @@ Rules:
     : == RULE 
     * == ANYTHING AFTER THAT
     ? == Optional
+    ()? == Optional Arguments
     (:) == Do not be confused it is the then keyword in brackets :)
 
 expr    :   KEYWORD : var IDENTIFIER EQ expr
@@ -15,13 +16,16 @@ arithmetic-expression  :  term ((PLUS|MINUS) term) *
 
 factor  :   factor ((MUL|DIV) factor) *
 
-power   :   atom  (POW factor) *
+power   :   call  (POW factor) *
+
+call    :   atom (LPAREN (expression (COMMA expression) *)? RPAREN)?
 
 atom    :   INT|FLOAT|IDENTIFIER
         :   LPAREN expr RPAREN
         :   if-expression
         :   for-expression
         :   while-expression
+        :   function-define
 
 if-expression          :  KEYWORD: if expression KEYWORD: (:) expression
                                 (KEYWORD: elif expression KEYWORD: then expression) *
@@ -31,3 +35,7 @@ for-expression          : KEYWORD: for IDENTIFIER EQ expression KEYWORD: to expr
                                 (KEYWORD: STEP expression)? KEYWORD: (:) expression
 
 while-expression        : KEYWORD: while expression KEYWORD: (:) expression
+
+function-define         : KEYWORD: function IDENTIFIER ? 
+                                LPAREN (IDENTIFIER (COMMA IDENTIFIER) *)? RPAREN
+                                ARROW expr
