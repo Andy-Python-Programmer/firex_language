@@ -20,7 +20,7 @@ power   :   call  (POW factor) *
 
 call    :   atom (LPAREN (expression (COMMA expression) *)? RPAREN)?
 
-atom    :   INT|FLOAT|IDENTIFIER
+atom    :   INT|FLOAT|STRING|IDENTIFIER
         :   LPAREN expr RPAREN
         :   if-expression
         :   for-expression
