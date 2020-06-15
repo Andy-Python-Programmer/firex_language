@@ -22,10 +22,13 @@ call    :   atom (LPAREN (expression (COMMA expression) *)? RPAREN)?
 
 atom    :   INT|FLOAT|STRING|IDENTIFIER
         :   LPAREN expr RPAREN
+        :   list-expression
         :   if-expression
         :   for-expression
         :   while-expression
         :   function-define
+
+list-expression        :  LSQUARE (expression (COMMA expression) *)? RSQUARE 
 
 if-expression          :  KEYWORD: if expression KEYWORD: (:) expression
                                 (KEYWORD: elif expression KEYWORD: then expression) *
