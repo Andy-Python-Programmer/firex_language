@@ -14,7 +14,13 @@ class DiffLexer(RegexLexer):
 
     tokens = {
         'root': [
-            (r'function', Generic.Heading), # Blue
+            (r'var', Generic.SubHeading),
+            (r'function', Generic.SubHeading),
+            (r'if', Generic.SubHeading),
+            (r'for', Generic.SubHeading),
+            (r'while', Generic.SubHeading),
+            (r'\d', Keyword),
+            (r'(\".*?\")', Keyword),
         ]
     }
 while True:
