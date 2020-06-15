@@ -1163,6 +1163,10 @@ class Number(Value):
         super().__init__()
         self.value = value
 
+    Number.null = Number(0)
+    Number.true = Number(1)
+    Number.false = Number(0)
+
     def added_to(self, other):
         if isinstance(other, Number):
             return Number(self.value + other.value).set_context(self.context), None
@@ -1587,9 +1591,9 @@ class Interpreter:
 #######################################
 
 global_symbol_table = SymbolTable()
-global_symbol_table.set("null", Number(0))
-global_symbol_table.set("true", Number(1))
-global_symbol_table.set("false", Number(0))
+global_symbol_table.set("null", Number.null)
+global_symbol_table.set("true", Number.true)
+global_symbol_table.set("false", Number.false)
 
 def run(fn, text):
     lexer = Lexer(fn, text)
