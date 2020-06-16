@@ -3,6 +3,8 @@
 
 import error_repr
 import string
+import math
+import os
 
 ########################################################
 # Tokens ( The Language source is commented also :) )
@@ -1420,8 +1422,8 @@ class BuiltInFunction(BaseFunction):
     return RTResult().success(Number(number))
   execute_input_int.arg_names = []
 
-  def execute_clear(self, exec_ctx):
-    os.system('cls' if os.name == 'nt' else 'cls') 
+  def execute_clear(self, exec_ctx): 
+    os.system('cls' if os.name == 'nt' else 'clear')
     return RTResult().success(Number.null)
   execute_clear.arg_names = []
 
@@ -1445,75 +1447,20 @@ class BuiltInFunction(BaseFunction):
     return RTResult().success(Number.true if is_number else Number.false)
   execute_is_function.arg_names = ["value"]
 
-  def execute_append(self, exec_ctx):
-    list_ = exec_ctx.symbol_table.get("list")
-    value = exec_ctx.symbol_table.get("value")
-
-    if not isinstance(list_, List):
-      return RTResult().failure(RTError(
-        self.pos_start, self.pos_end,
-        "First argument must be list",
-        exec_ctx
-      ))
-
-    list_.elements.append(value)
-    return RTResult().success(Number.null)
-  execute_append.arg_names = ["list", "value"]
-
-  def execute_pop(self, exec_ctx):
-    list_ = exec_ctx.symbol_table.get("list")
-    index = exec_ctx.symbol_table.get("index")
-
-    if not isinstance(list_, List):
-      return RTResult().failure(RTError(
-        self.pos_start, self.pos_end,
-        "First argument must be list",
-        exec_ctx
-      ))
-
-    if not isinstance(index, Number):
-      return RTResult().failure(RTError(
-        self.pos_start, self.pos_end,
-        "Second argument must be number",
-        exec_ctx
-      ))
-
-    try:
-      element = list_.elements.pop(index.value)
-    except:
-      return RTResult().failure(RTError(
-        self.pos_start, self.pos_end,
-        'Element at this index could not be removed from list because index is out of bounds',
-        exec_ctx
-      ))
-    return RTResult().success(element)
-  execute_pop.arg_names = ["list", "index"]
-
-  def execute_extend(self, exec_ctx):
-    listA = exec_ctx.symbol_table.get("listA")
-    listB = exec_ctx.symbol_table.get("listB")
-
-    if not isinstance(listA, List):
-      return RTResult().failure(RTError(
-        self.pos_start, self.pos_end,
-        "First argument must be list",
-        exec_ctx
-      ))
-
-    if not isinstance(listB, List):
-      return RTResult().failure(RTError(
-        self.pos_start, self.pos_end,
-        "Second argument must be list",
-        exec_ctx
-      ))
-
-    listA.elements.extend(listB.elements)
-    return RTResult().success(Number.null)
-  execute_extend.arg_names = ["listA", "listB"]
-
 Number.null = Number(0)
 Number.true = Number(1)
 Number.false = Number(0)
+Number.math_PI = Number(math.pi)
+
+BuiltInFunction.print = BuiltInFunction("print")
+BuiltInFunction.print_ret = BuiltInFunction("printr")
+BuiltInFunction.input = BuiltInFunction("input")
+BuiltInFunction.input_int = BuiltInFunction("input_int")
+BuiltInFunction.clear = BuiltInFunction("clear")
+BuiltInFunction.is_number = BuiltInFunction("is_number")
+BuiltInFunction.is_string = BuiltInFunction("is_string")
+BuiltInFunction.is_list = BuiltInFunction("is_list")
+BuiltInFunction.is_function = BuiltInFunction("is_function")
 
 class Context:
     def __init__(self, display_name, parent = None, parent_entry_pos = None):
@@ -1587,7 +1534,7 @@ class Interpreter:
                 context
             ))
 
-        value = value.copy().set_pos(node.pos_start, node.pos_end)
+        value = value.copy().set_pos(node.pos_start, node.pos_end).set_context(context)
         return res.success(value)
 
     def visit_VarAssignNode(self, node, context):
@@ -1757,6 +1704,7 @@ class Interpreter:
 
         return_value = res.register(value_to_call.execute(args))
         if res.error: return res
+        return_value = return_value.copy().set_pos(node.pos_start, node.pos_end).set_context(context)
         return res.success(return_value)
 
 #######################################
@@ -1767,6 +1715,17 @@ global_symbol_table = SymbolTable()
 global_symbol_table.set("null", Number.null)
 global_symbol_table.set("true", Number.true)
 global_symbol_table.set("false", Number.false)
+global_symbol_table.set("PI", Number.math_PI)
+global_symbol_table.set("print", BuiltInFunction.print)
+global_symbol_table.set("printr", BuiltInFunction.print_ret)
+global_symbol_table.set("input", BuiltInFunction.input)
+global_symbol_table.set("input_int", BuiltInFunction.input_int)
+global_symbol_table.set("clear", BuiltInFunction.clear)
+global_symbol_table.set("cls", BuiltInFunction.clear)
+global_symbol_table.set("is_num", BuiltInFunction.is_number)
+global_symbol_table.set("is_str", BuiltInFunction.is_string)
+global_symbol_table.set("is_list", BuiltInFunction.is_list)
+global_symbol_table.set("is_function", BuiltInFunction.is_function)
 
 def run(fn, text):
     lexer = Lexer(fn, text)
